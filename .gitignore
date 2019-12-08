@@ -105,3 +105,5 @@ venv.bak/
 
 webapp/node_modules/
 webapp/package-lock.json
+
+.idea
