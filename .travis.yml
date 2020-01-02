@@ -1,6 +1,7 @@
 matrix:
   include:
   - language: python
+    name: 'pytest'
     python:
     - '3.7'
     install:
@@ -13,6 +14,7 @@ matrix:
     after_success:
     - codecov
   - language: python
+    name: 'flake8'
     python:
     - '3.7'
     install:
@@ -21,6 +23,7 @@ matrix:
     script:
     - flake8 uwsgi.py monograph
   - language: python
+    name: 'mypy'
     python:
     - '3.7'
     install:
@@ -29,6 +32,7 @@ matrix:
     script:
     - mypy uwsgi.py monograph
   - language: node_js
+    name: 'npm run test'
     node_js:
     - '11.13.0'
     before_install:
@@ -42,6 +46,7 @@ matrix:
     after_success:
     - codecov
   - language: node_js
+    name: 'npm run lint'
     node_js:
     - '11.13.0'
     before_install:
