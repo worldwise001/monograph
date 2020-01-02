@@ -6,10 +6,28 @@ matrix:
     install:
     - pip install -r requirements.txt
     - pip install codecov
+    - pip install pytest
+    - pip install pytest-cov
     script:
     - pytest
     after_success:
     - codecov
+  - language: python
+    python:
+    - '3.7'
+    install:
+    - pip install -r requirements.txt
+    - pip install flake8
+    script:
+    - flake8 uwsgi.py monograph
+  - language: python
+    python:
+    - '3.7'
+    install:
+    - pip install -r requirements.txt
+    - pip install mypy
+    script:
+    - mypy uwsgi.py monograph
   - language: node_js
     node_js:
     - '11.13.0'
@@ -19,8 +37,16 @@ matrix:
     - npm install
     - npm install codecov -g
     script:
-    - npm run lint
     - npm run build
     - npm run test
     after_success:
     - codecov
+  - language: node_js
+    node_js:
+    - '11.13.0'
+    before_install:
+    - cd webapp
+    install:
+    - npm install
+    script:
+    - npm run lint
