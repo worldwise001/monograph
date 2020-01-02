@@ -12,7 +12,7 @@ matrix:
     - codecov
   - language: node_js
     node_js:
-    - '8.9.1'
+    - '11.13.0'
     before_install:
     - cd webapp
     install:
