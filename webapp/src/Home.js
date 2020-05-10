@@ -12,7 +12,7 @@ class Home extends Component {
                 </Helmet>
                 <h1 className="display-4">Welcome to monograph!</h1>
                 <p className="lead">Monograph is a service to help you find and extract summaries and relationships
-                between different research papers. Right now it's in an extremely experimental state.</p>
+                between different research papers. Right now it&apos;s in an extremely experimental state.</p>
                 <hr className="my-4" />
                 <p>Check back later for demos and example results.</p>
                 <p className="lead">
