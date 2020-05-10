@@ -20,7 +20,6 @@ def create_app() -> Flask:
     CORS(app)
     Swagger(app, template_file=os.path.join(ROOT_DIR, 'swagger', 'template.yml'), parse=True,
             config={
-                "basePath": "https://monograph.shh.sh",
                 "headers": [],
                 "specs": [
                     {
@@ -33,7 +32,7 @@ def create_app() -> Flask:
                 "static_url_path": "/static/flasgger",
                 # "static_folder": "static",  # must be set by user
                 "swagger_ui": True,
-                "specs_route": "/spec/"})
+                "specs_route": "/spec"})
 
     LOGGER.info(app.url_map)
 
