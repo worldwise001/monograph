@@ -9,6 +9,8 @@ import Search from "./Search";
 import Library from "./Library";
 import Preferences from "./Preferences";
 import Annotate from "./Annotate";
+import Footer from "./Footer";
+import About from "./About";
 
 class App extends Component {
     render() {
@@ -23,8 +25,10 @@ class App extends Component {
                             <Route path='/library' component={Library}/>
                             <Route path='/annotate' component={Annotate}/>
                             <Route path='/preferences' component={Preferences}/>
+                            <Route path='/about' component={About}/>
                         </Switch>
                     </Container>
+                    <Footer />
                 </div>
             </BrowserRouter>
         );
