@@ -30,11 +30,11 @@ matrix:
     - pip install -r requirements.txt
     - pip install mypy
     script:
-    - mypy uwsgi.py monograph
+    - mypy monograph
   - language: node_js
     name: 'npm run test'
     node_js:
-    - '11.13.0'
+    - '12.16.3'
     before_install:
     - cd webapp
     install:
@@ -48,7 +48,7 @@ matrix:
   - language: node_js
     name: 'npm run lint'
     node_js:
-    - '11.13.0'
+    - '12.16.3'
     before_install:
     - cd webapp
     install:
