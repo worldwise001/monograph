@@ -1,30 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import Container from "react-bootstrap/Container";
+import {BrowserRouter, Switch, Route} from "react-router-dom";
 
-/**
- * App
- * @return {App} app
- */
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from "./Header";
+import Home from "./Home";
+import Search from "./Search";
+import Library from "./Library";
+import Preferences from "./Preferences";
+import Annotate from "./Annotate";
+
+class App extends Component {
+    render() {
+        return (
+            <BrowserRouter>
+                <div>
+                    <Header/>
+                    <Container fluid>
+                        <Switch>
+                            <Route exact path='/' component={Home}/>
+                            <Route path='/search' component={Search}/>
+                            <Route path='/library' component={Library}/>
+                            <Route path='/annotate' component={Annotate}/>
+                            <Route path='/preferences' component={Preferences}/>
+                        </Switch>
+                    </Container>
+                </div>
+            </BrowserRouter>
+        );
+    }
 }
 
 export default App;
