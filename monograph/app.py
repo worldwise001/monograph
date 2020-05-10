@@ -20,6 +20,7 @@ def create_app() -> Flask:
     CORS(app)
     Swagger(app, template_file=os.path.join(ROOT_DIR, 'swagger', 'template.yml'), parse=True,
             config={
+                "basePath": "https://monograph.shh.sh",
                 "headers": [],
                 "specs": [
                     {
