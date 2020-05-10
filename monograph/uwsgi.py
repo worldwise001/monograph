@@ -5,7 +5,7 @@ from flask import Flask, send_from_directory
 
 
 def create_app() -> Flask:
-    app = Flask(__name__, static_folder='webapp/build')
+    app = Flask(__name__, static_folder='../webapp/build')
 
     # Serve React App
     @app.route('/', defaults={'path': ''})
