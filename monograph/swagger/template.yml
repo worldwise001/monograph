@@ -1,0 +1,7 @@
+info:
+  title: 'Monograph Service'
+  description: 'Used to search for, analyze, and find relationships between different PDFs.'
+  version: '0.1.0'
+
+components:
+  schemas: {}
