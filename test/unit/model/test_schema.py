@@ -20,11 +20,11 @@ class SchemaTest(unittest.TestCase):
     def test_simple_deserialization(self) -> None:
         test = SomeField(b_field=123)
         schema = SomeFieldSchema(strict=True)
-        blob = schema.dumps(test).data
-        self.assertEqual('{"b-field": 123}', blob)
+        blob = schema.dump(test).data
+        self.assertEqual({"b-field": 123}, blob)
 
     def test_complex_deserialization(self) -> None:
         test = SomeModel(a_field="test", another_field=SomeField(b_field=123))
         schema = SomeModelSchema(strict=True)
-        blob = schema.dumps(test).data
-        self.assertEqual('{"another-field": {"b-field": 123}, "a-field": "test"}', blob)
+        blob = schema.dump(test).data
+        self.assertEqual({"another-field": {"b-field": 123}, "a-field": "test"}, blob)

@@ -7,7 +7,7 @@ from monograph.api.search import SearchAPI
 
 
 class ApiBlueprint(Blueprint):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('api', __name__, url_prefix='/api')
         self.api = Api(self)
         self.api.add_resource(AnalyzeAPI, '/analyze')
