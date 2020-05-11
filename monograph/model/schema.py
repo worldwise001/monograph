@@ -17,14 +17,14 @@ def convert_keys_in_dict(data: Dict[str, Any], char_from: str, char_to: str) -> 
 
 class CrossRefAttrsSchema(AttrsSchema):
     @pre_load
-    def preload(self, data: Dict[str, Any], **kwargs) -> Dict[str, Any]:
+    def preload(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         if type(data) is dict:
             return convert_keys_in_dict(data, '-', '_')
         else:
             return data
 
     @post_dump
-    def postdump(self, data: Dict[str, Any], **kwargs) -> Dict[str, Any]:
+    def postdump(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         if type(data) is dict:
             return convert_keys_in_dict(data, '_', '-')
         else:

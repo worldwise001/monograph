@@ -1,14 +1,14 @@
 from http import HTTPStatus
 from typing import Tuple, List
 
-from crossref.restful import Journals, Works, Members
+from crossref.restful import Members
 from flask_restful import Resource
 
 from monograph import ETIQUETTE
 
 
 class LibraryAPI(Resource):
-    def __init__(self):
+    def __init__(self) -> None:
         self.members = Members(etiquette=ETIQUETTE)
 
     def get(self) -> Tuple[List, int]:
