@@ -1,0 +1,6 @@
+monograph:
+  base_url: https://monograph.example.com
+  contact_email: contact@example.com
+  memberlist:  # pull from memberlist
+    - 320  # Association for Computing Machinery
+    - 263  # Institute for Electrical and Electronics Engineers

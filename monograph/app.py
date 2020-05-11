@@ -30,7 +30,6 @@ def create_app() -> Flask:
                     }
                 ],
                 "static_url_path": "/static/flasgger",
-                # "static_folder": "static",  # must be set by user
                 "swagger_ui": True,
                 "specs_route": "/spec"})
 

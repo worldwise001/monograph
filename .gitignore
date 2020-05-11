@@ -106,3 +106,6 @@ venv.bak/
 webapp/node_modules/
 
 .idea
+
+# config with secrets
+config.yml

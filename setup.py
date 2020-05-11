@@ -1,11 +1,13 @@
 from setuptools import setup, find_packages
 
+from monograph import VERSION
+
 with open('requirements.txt') as f:
     install_requires = f.read().strip().split('\n')
 
 setup(
     name="monograph",
-    version="0.1",
+    version=VERSION,
     packages=find_packages(),
     install_requires=install_requires,
 
