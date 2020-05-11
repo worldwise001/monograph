@@ -9,10 +9,9 @@ matrix:
     - pip install codecov
     - pip install pytest
     - pip install pytest-cov
+    - cp config.example.yml config.yml
     script:
     - pytest
-    after_success:
-    - codecov
   - language: python
     name: 'flake8'
     python:
