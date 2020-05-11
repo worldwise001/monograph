@@ -21,7 +21,7 @@ matrix:
     - pip install -r requirements.txt
     - pip install flake8
     script:
-    - flake8 uwsgi.py monograph
+    - flake8 monograph
   - language: python
     name: 'mypy'
     python:
