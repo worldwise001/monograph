@@ -33,7 +33,7 @@ class Library extends Component {
             )
     }
 
-    createCard = (member) => {
+    createCard(member) {
         return (
             <Card key={member['id']}>
                 <Card.Body>
@@ -50,7 +50,7 @@ class Library extends Component {
         )
     }
 
-    createRows = (items) => {
+    createRows(items) {
         let rows = [];
         for (let row_id = 0; row_id < Math.ceil(items.length / 3); row_id++) {
             let cards = [];
