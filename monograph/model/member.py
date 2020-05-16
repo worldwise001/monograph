@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 
 import attr
 
@@ -15,27 +15,30 @@ class MemberCounts:
 class MemberCountsSchema(CrossRefAttrsSchema):
     class Meta:
         target = MemberCounts
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True)
 class MemberDOIsByYear:
-    year: int
-    count: int
+    year: Optional[int] = None
+    count: Optional[int] = None
 
 
 class MemberDOIsByYearSchema(CrossRefAttrsSchema):
     class Meta:
         target = MemberDOIsByYear
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True)
 class MemberBreakdowns:
-    dois_issued_by_year: List[MemberDOIsByYear]
+    dois_issued_by_year: List[MemberDOIsByYear] = []
 
 
 class MemberBreakdownsSchema(CrossRefAttrsSchema):
     class Meta:
         target = MemberBreakdowns
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True)
@@ -67,12 +70,13 @@ class MemberCoverage:
 class MemberCoverageSchema(CrossRefAttrsSchema):
     class Meta:
         target = MemberCoverage
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True)
 class MemberPrefix:
     reference_visibility: str
-    public_reference: bool
+    public_reference: Optional[bool]
     name: str
     value: str
 
@@ -80,29 +84,42 @@ class MemberPrefix:
 class MemberPrefixSchema(CrossRefAttrsSchema):
     class Meta:
         target = MemberPrefix
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True)
-class MemberCountsTypeCounts:
-    journal_article: str
+class MemberCoverageSubType:
+    last_status_check_time: int
+    affiliations: float
+    abstracts: float
+    orcids: float
+    licenses: float
+    references: float
+    funders: float
+    similarity_checking: float
+    award_numbers: float
+    update_policies: float
+    resource_links: float
+    open_references: float
+
+
+class MemberCoverageSubTypeSchema(CrossRefAttrsSchema):
+    class Meta:
+        target = MemberCoverageSubType
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True)
+class MemberCoverageOrCountType:
+    # TODO: fix to properly allow subtypes
+    journal_article: Optional[str] = None
     journal: Optional[str] = None
 
 
-class MemberCountsTypeCountsSchema(CrossRefAttrsSchema):
+class MemberCoverageOrCountTypeSchema(CrossRefAttrsSchema):
     class Meta:
-        target = MemberCountsTypeCounts
-
-
-@attr.s(auto_attribs=True)
-class MemberCountsType:
-    all: MemberCountsTypeCounts
-    current: MemberCountsTypeCounts
-    backfile: MemberCountsTypeCounts
-
-
-class MemberCountsTypeSchema(CrossRefAttrsSchema):
-    class Meta:
-        target = MemberCountsType
+        target = MemberCoverageOrCountType
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True)
@@ -116,8 +133,8 @@ class Member:
     prefix: List[MemberPrefix]
     id: int
     tokens: List[str]
-    counts_type: MemberCountsType
-    # coverage_type: MemberCoverageType
+    counts_type: MemberCoverageOrCountType
+    coverage_type: MemberCoverageOrCountType
     flags: Dict[str, bool]
     location: str
     names: List[str]
@@ -126,3 +143,4 @@ class Member:
 class MemberSchema(CrossRefAttrsSchema):
     class Meta:
         target = Member
+        register_as_scheme = True
