@@ -20,6 +20,10 @@ class About extends Component {
                     This source is <a href='https://worldwise001.github.com/monograph'>freely available</a> under
                     the conditions of the <a href='https://github.com/worldwise001/monograph/blob/master/LICENSE'>MIT License</a>.
                 </p>
+                <p className="lead">
+                    This service is provided free of charge with zero ads and zero trackers. If you want to support
+                    this work, head on over to <a href='https://www.patreon.com/worldwise001'>Patreon</a>.
+                </p>
             </div>
         );
     }

@@ -45,3 +45,7 @@ body {
 .about-div {
   max-width: 700px;
 }
+
+.container-content {
+  padding-top: 50px;
+}

@@ -39,7 +39,7 @@ class Library extends Component {
                 <Card.Body>
                     <Card.Title>{member['id']} - {member['name']}</Card.Title>
                     <Card.Text>
-                        Prefixes: {member['doi_prefixes'].join(', ')}<br />
+                        Prefixes: {member['doi_prefixes'].join(', ')}<br/>
                         Available Works: {member['available_works']}
                     </Card.Text>
                 </Card.Body>
@@ -54,7 +54,7 @@ class Library extends Component {
         let rows = [];
         for (let row_id = 0; row_id < Math.ceil(items.length / 3); row_id++) {
             let cards = [];
-            for (let card_id = row_id*3; card_id < Math.min((row_id+1)*3, items.length); card_id++) {
+            for (let card_id = row_id * 3; card_id < Math.min((row_id + 1) * 3, items.length); card_id++) {
                 cards.push(this.createCard(items[card_id]))
             }
             rows.push(<Row key={row_id}><Col><CardDeck>{cards}</CardDeck></Col></Row>)
@@ -64,12 +64,9 @@ class Library extends Component {
 
     render() {
         return (
-            <div>
-                <Container>
-                    {this.createRows(this.state.items)}
-                </Container>
-
-            </div>
+            <Container className={"container-content"}>
+                {this.createRows(this.state.items)}
+            </Container>
         );
     }
 }
