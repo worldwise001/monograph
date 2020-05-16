@@ -1,8 +1,13 @@
-from typing import List, Optional, Dict, Union
+import datetime
+import logging
+from typing import List, Optional, Dict, Any
 
 import attr
+from marshmallow import pre_load, post_dump
 
 from monograph.model.schema import CrossRefAttrsSchema
+
+LOGGER = logging.getLogger(__name__)
 
 
 @attr.s(auto_attribs=True)
@@ -32,13 +37,27 @@ class MemberDOIsByYearSchema(CrossRefAttrsSchema):
 
 @attr.s(auto_attribs=True)
 class MemberBreakdowns:
-    dois_issued_by_year: List[MemberDOIsByYear] = []
+    dois_by_issued_year: List[MemberDOIsByYear]
 
 
 class MemberBreakdownsSchema(CrossRefAttrsSchema):
     class Meta:
         target = MemberBreakdowns
         register_as_scheme = True
+
+    @pre_load
+    def preload(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        if 'dois_by_issued_year' in data:
+            doi_list = data['dois_by_issued_year']
+            data['dois_by_issued_year'] = [{'year': part[0], 'count': part[1]} for part in doi_list]
+        return super().preload(data)
+
+    @post_dump
+    def postdump(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        if 'dois_by_issued_year' in data:
+            doi_list = data['dois_by_issued_year']
+            data['dois_by_issued_year'] = [[part.year, part.count] for part in doi_list]
+        return super().postdump(data)
 
 
 @attr.s(auto_attribs=True)
@@ -138,6 +157,23 @@ class Member:
     flags: Dict[str, bool]
     location: str
     names: List[str]
+
+    def get_simple(self) -> Dict[str, Any]:
+        current_year = datetime.datetime.now().year
+        dois = {year: 0 for year in range(current_year, current_year - 5, -1)}
+        for entry in self.breakdowns.dois_by_issued_year:
+            if entry.year in dois:
+                dois[entry.year] = entry.count or 0
+        return {
+            'id': self.id,
+            'name': self.primary_name,
+            'dois_by_year': dois,
+            'doi_prefixes': self.prefixes,
+            'available_works': self.counts.current_dois,
+            'last_updated': self.last_status_check_time,
+            'last_updated_human_readable':
+                str(datetime.datetime.now() - datetime.datetime.fromtimestamp(self.last_status_check_time / 1000))
+        }
 
 
 class MemberSchema(CrossRefAttrsSchema):

@@ -18,7 +18,6 @@ class App extends Component {
             <BrowserRouter>
                 <div>
                     <Header/>
-                    <Container fluid>
                         <Switch>
                             <Route exact path='/' component={Home}/>
                             <Route path='/search' component={Search}/>
@@ -27,7 +26,6 @@ class App extends Component {
                             <Route path='/preferences' component={Preferences}/>
                             <Route path='/about' component={About}/>
                         </Switch>
-                    </Container>
                     <Footer />
                 </div>
             </BrowserRouter>
