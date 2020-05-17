@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import Any, Dict
 
 from marshmallow import pre_load, post_dump
@@ -19,13 +20,30 @@ class CrossRefAttrsSchema(AttrsSchema):
     @pre_load
     def preload(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         if type(data) is dict:
-            return convert_keys_in_dict(data, '-', '_')
+            converted = convert_keys_in_dict(data, '-', '_')
+            for key in converted.keys():
+                if type(converted[key]) is dict and converted[key].keys() == {'date_parts', 'date_time', 'timestamp'}:
+                    converted_date = datetime.fromtimestamp(converted[key]['timestamp'] / 1000, tz=timezone.utc)
+                    converted[key] = converted_date.isoformat()
+            return converted
         else:
             return data
 
     @post_dump
     def postdump(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         if type(data) is dict:
-            return convert_keys_in_dict(data, '_', '-')
+            converted = convert_keys_in_dict(data, '_', '-')
+            for key in converted.keys():
+                if type(converted[key]) is str:
+                    try:
+                        converted_date = datetime.fromisoformat(converted[key])
+                        converted[key] = {
+                            'date-parts': [[converted_date.year, converted_date.month, converted_date.day]],
+                            'date-time': converted_date.isoformat().replace('+00:00', 'Z'),
+                            'timestamp': int(converted_date.timestamp()) * 1000
+                        }
+                    except ValueError:
+                        pass
+            return converted
         else:
             return data

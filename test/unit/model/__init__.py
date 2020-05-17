@@ -1,6 +1,20 @@
+from datetime import datetime
+from typing import Optional
+
 import attr
 
 from monograph.model.schema import CrossRefAttrsSchema
+
+
+@attr.s(auto_attribs=True)
+class SomeDateTimeField:
+    a_date: Optional[datetime] = None
+
+
+class SomeDateTimeFieldSchema(CrossRefAttrsSchema):
+    class Meta:
+        target = SomeDateTimeField
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True)
