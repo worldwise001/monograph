@@ -13,6 +13,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def create_app() -> Flask:
     logging.basicConfig(level=logging.INFO)
+    logging.getLogger('urllib3.connectionpool').setLevel(level=logging.DEBUG)
 
     app = Flask(__name__)
     app.register_blueprint(ApiBlueprint())
