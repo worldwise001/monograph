@@ -19,7 +19,7 @@ class SomeDateTimeFieldSchema(CrossRefAttrsSchema):
 
 @attr.s(auto_attribs=True)
 class SomeField:
-    b_field: int
+    isbn: int
 
 
 class SomeFieldSchema(CrossRefAttrsSchema):

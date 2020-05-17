@@ -4,6 +4,8 @@ from typing import Any, Dict
 from marshmallow import pre_load, post_dump
 from marshmallow_annotations.ext.attrs import AttrsSchema
 
+SPECIAL_KEYS = ['isbn', 'doi', 'url']
+
 
 def convert_keys_in_dict(data: Dict[str, Any], char_from: str, char_to: str) -> Dict[str, Any]:
     new_data = {}
@@ -21,10 +23,14 @@ class CrossRefAttrsSchema(AttrsSchema):
     def preload(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         if type(data) is dict:
             converted = convert_keys_in_dict(data, '-', '_')
-            for key in converted.keys():
+            keys = list(converted.keys())
+            for key in keys:
                 if type(converted[key]) is dict and converted[key].keys() == {'date_parts', 'date_time', 'timestamp'}:
                     converted_date = datetime.fromtimestamp(converted[key]['timestamp'] / 1000, tz=timezone.utc)
                     converted[key] = converted_date.isoformat()
+                if key.lower() in SPECIAL_KEYS:
+                    converted[key.lower()] = converted[key]
+                    del converted[key]
             return converted
         else:
             return data
@@ -33,7 +39,8 @@ class CrossRefAttrsSchema(AttrsSchema):
     def postdump(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         if type(data) is dict:
             converted = convert_keys_in_dict(data, '_', '-')
-            for key in converted.keys():
+            keys = list(converted.keys())
+            for key in keys:
                 if type(converted[key]) is str:
                     try:
                         converted_date = datetime.fromisoformat(converted[key])
@@ -44,6 +51,9 @@ class CrossRefAttrsSchema(AttrsSchema):
                         }
                     except ValueError:
                         pass
+                if key in SPECIAL_KEYS:
+                    converted[key.upper()] = converted[key]
+                    del converted[key]
             return converted
         else:
             return data
