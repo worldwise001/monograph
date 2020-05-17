@@ -53,3 +53,7 @@ body {
 .search-result {
   margin-bottom: 10px;
 }
+
+.search-results {
+  padding: 30px 0;
+}

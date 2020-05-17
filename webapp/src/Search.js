@@ -7,14 +7,20 @@ import Spinner from "./Spinner";
 class Search extends Component {
     constructor(props) {
         super(props);
+        const params = new URLSearchParams(this.props.location.search)
         this.state = {
             error: null,
             isLoaded: false,
-            items: [],
+            libraries: [],
+            works: [],
+            crossref: {
+                count: 0,
+                url: null,
+            },
             query: {
-                'q': '',
-                'sort': 'Score',
-                'limit': '10',
+                'q': params.get('q'),
+                'sort': params.get('sort'),
+                'limit': params.get('limit'),
             }
         };
 
@@ -49,7 +55,9 @@ class Search extends Component {
             .then(
                 (result) => {
                     state.isLoaded = true;
-                    state.items = [];
+                    state.works = result.items;
+                    state.crossref.count = result.total;
+                    state.crossref.url = result.url;
                     this.setState(state);
                 },
                 (error) => {
@@ -64,22 +72,19 @@ class Search extends Component {
         let state = this.state;
         if (this.props.location.search) {
             this.searchFetch(this.props.location.search);
-        } else {
-            fetch("/api/library")
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        state.isLoaded = true;
-                        state.items = result.items;
-                        this.setState(state);
-                    },
-                    (error) => {
-                        state.isLoaded = true;
-                        state.error = error;
-                        this.setState(state);
-                    }
-                )
         }
+        fetch("/api/library")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    state.libraries = result.items;
+                    this.setState(state);
+                },
+                (error) => {
+                    state.error = error;
+                    this.setState(state);
+                }
+            )
     }
 
     getCheckBoxes(items) {
@@ -91,104 +96,93 @@ class Search extends Component {
         return checkboxes;
     }
 
-    renderSearchQuery(items) {
+    searchForm(items) {
         return (
-            <Container className={"container-content"}>
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Row>
-                        <Form.Group as={Col} controlId="formQuery">
-                            <Form.Label>Query</Form.Label>
-                            <Form.Control type="text" placeholder="A cool paper title" name="q"
-                                          onChange={this.handleInputChange}/>
-                        </Form.Group>
-                    </Form.Row>
+            <Form onSubmit={this.handleSubmit}>
+                <Form.Row>
+                    <Form.Group as={Col} controlId="formQuery">
+                        <Form.Label>Query</Form.Label>
+                        <Form.Control type="text" placeholder="A cool paper title" name="q"
+                                      onChange={this.handleInputChange} defaultValue={this.state.query.q}/>
+                    </Form.Group>
+                </Form.Row>
 
-                    <Form.Row>
-                        <Form.Group as={Col} md="6" controlId="formMembers">
-                            <Form.Label>Sources</Form.Label>
-                            {this.getCheckBoxes(items)}
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" controlId="formSort">
-                            <Form.Label>Sort by</Form.Label>
-                            <Form.Control as="select" defaultValue="Score" name="sort"
-                                          onChange={this.handleInputChange}>
-                                <option>Score</option>
-                                <option>Published</option>
-                                <option>Citations</option>
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" controlId="formLimit">
-                            <Form.Label>Number of results</Form.Label>
-                            <Form.Control as="select" defaultValue="10" name="limit"
-                                          onChange={this.handleInputChange}>
-                                <option>10</option>
-                                <option>20</option>
-                                <option>50</option>
-                                <option>100</option>
-                            </Form.Control>
-                        </Form.Group>
-                    </Form.Row>
-                    <Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} md="6" controlId="formMembers">
+                        <Form.Label>Sources</Form.Label>
+                        {this.getCheckBoxes(items)}
+                    </Form.Group>
+                    <Form.Group as={Col} md="2" controlId="formSort">
+                        <Form.Label>Sort by</Form.Label>
+                        <Form.Control as="select" defaultValue={this.state.query.sort} name="sort"
+                                      onChange={this.handleInputChange}>
+                            <option>Score</option>
+                            <option>Published</option>
+                            <option>Citations</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group as={Col} md="2" controlId="formLimit">
+                        <Form.Label>Number of results</Form.Label>
+                        <Form.Control as="select" defaultValue={this.state.query.limit} name="limit"
+                                      onChange={this.handleInputChange}>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </Form.Control>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group>
                         <Button variant="primary" type="submit">
                             Search
                         </Button>
-                    </Form.Row>
-                </Form>
-            </Container>
+                    </Form.Group>
+                </Form.Row>
+            </Form>
         );
     }
 
-    renderCard(i, item) {
+    createCard(item) {
+        let cardLink = '';
+        if (item.url) {
+            cardLink = <Card.Link href={item.url}>PDF</Card.Link>;
+        }
         return (
-            <Card className='search-result'>
+            <Card key={item.doi} className='search-result'>
                 <Card.Body>
-                    <Card.Title>Card Title</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+                    <Card.Title>{item.title}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                        {item.authors.map(author => `${author.given} ${author.family}`).join(', ')}
+                    </Card.Subtitle>
                     <Card.Text>
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card content.
+                        DOI: {item.doi}<br/>
+                        Year: {item.year}
                     </Card.Text>
-                    <Card.Link href="#">Card Link</Card.Link>
-                    <Card.Link href="#">Another Link</Card.Link>
+                    {cardLink}
                 </Card.Body>
             </Card>
         )
     }
 
-    renderCards(items) {
-        return (
-            <div>
-                <Card>
-                    <Card.Body>
-                        <Card.Title>Card Title</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-                        <Card.Text>
-                            Some quick example text to build on the card title and make up the bulk of
-                            the card content.
-                        </Card.Text>
-                        <Card.Link href="#">Card Link</Card.Link>
-                        <Card.Link href="#">Another Link</Card.Link>
-                    </Card.Body>
-                </Card>
-            </div>
-        )
-    }
-
-    renderSearchResults(items) {
-        return (
-            <Container className={"container-content"}>
-                {!this.state.isLoaded && <Spinner/>}
-                {this.state.isLoaded && this.renderCards(items)}
-            </Container>
-        );
+    createCards(items) {
+        let cards = [];
+        for (let i = 0; i < items.length; i++) {
+            cards.push(this.createCard(items[i]));
+        }
+        return cards;
     }
 
     render() {
-        if (this.props.location.search) {
-            return this.renderSearchResults(this.state.items);
-        } else {
-            return this.renderSearchQuery(this.state.items);
-        }
+        return (
+            <Container className={"container-content"}>
+                {this.searchForm(this.state.libraries)}
+                <div className="search-results">
+                    {!this.state.isLoaded && <Spinner/>}
+                    {this.state.isLoaded && this.state.works.length > 0 && this.createCards(this.state.works)}
+                </div>
+            </Container>
+        )
     }
 }
 

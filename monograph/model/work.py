@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 
 import attr
+from marshmallow import pre_load
 
 from monograph.model.schema import CrossRefAttrsSchema
 
@@ -32,13 +33,20 @@ class ContentDomainSchema(CrossRefAttrsSchema):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class DateParts:
-    date_parts: List[List[int]]
+    date_parts: List[List[int]] = []
 
 
 class DatePartsSchema(CrossRefAttrsSchema):
     class Meta:
         target = DateParts
         register_as_scheme = True
+
+    @pre_load
+    def preload(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        converted = super().preload(data, **kwargs)
+        if converted['date_parts'] == [[None]]:
+            converted['date_parts'] = []
+        return converted
 
 
 @attr.s(auto_attribs=True, kw_only=True)
@@ -131,9 +139,9 @@ class Work:
     container_title: List[str]
     deposited: datetime
     score: float
-    issued: DateParts
     references_count: int
     url: str
+    issued: DateParts
     isbn: List[str] = []
     isbn_type: List[ISBNType] = []
     link: List[Link] = []
@@ -158,7 +166,9 @@ class Work:
             'title': self.title[0] or 'Unknown',
             'doi': self.doi or None,
             'cited_by': self.is_referenced_by_count,
-            'year': self.issued.date_parts[0][0],
+            'year': self.issued.date_parts[0][0]
+            if self.issued.date_parts or len(self.issued.date_parts) > 0
+            else None,
             'from': self.container_title[0] or None,
             'authors': AuthorSchema(many=True).dump(self.author).data,
             'pdf': link,
