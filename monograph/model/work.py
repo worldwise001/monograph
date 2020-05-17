@@ -62,9 +62,9 @@ class AffiliationSchema(CrossRefAttrsSchema):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class Author:
-    given: str
     family: str
     sequence: str
+    given: Optional[str] = None
     affiliation: List[Affiliation] = []
 
 
@@ -77,7 +77,7 @@ class AuthorSchema(CrossRefAttrsSchema):
 @attr.s(auto_attribs=True, kw_only=True)
 class Event:
     name: str
-    location: str
+    location: Optional[str] = None
     start: Optional[DateParts] = None
     end: Optional[DateParts] = None
 

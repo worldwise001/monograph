@@ -8,9 +8,21 @@ class Search extends Component {
     constructor(props) {
         super(props);
         const params = new URLSearchParams(this.props.location.search)
+        let q = params.get('q');
+        if (!q) {
+            q = '';
+        }
+        let sort = params.get('sort');
+        if (!sort) {
+            sort = 'Score';
+        }
+        let limit = params.get('limit');
+        if (!limit) {
+            limit = '10';
+        }
         this.state = {
             error: null,
-            isLoaded: false,
+            isLoaded: true,
             libraries: [],
             works: [],
             crossref: {
@@ -18,9 +30,9 @@ class Search extends Component {
                 url: null,
             },
             query: {
-                'q': params.get('q'),
-                'sort': params.get('sort'),
-                'limit': params.get('limit'),
+                'q': q,
+                'sort': sort,
+                'limit': limit,
             }
         };
 
@@ -145,8 +157,8 @@ class Search extends Component {
 
     createCard(item) {
         let cardLink = '';
-        if (item.url) {
-            cardLink = <Card.Link href={item.url}>PDF</Card.Link>;
+        if (item.pdf) {
+            cardLink = <Card.Link href={item.pdf}>PDF</Card.Link>;
         }
         return (
             <Card key={item.doi} className='search-result'>
