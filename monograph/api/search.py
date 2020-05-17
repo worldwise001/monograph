@@ -7,11 +7,13 @@ from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
 from monograph import ETIQUETTE, CONFIG
+from monograph.model.work import WorkSchema
 
 
 class SearchAPI(Resource):
     def __init__(self) -> None:
         self.works = Works(etiquette=ETIQUETTE)
+        self.work_schema = WorkSchema(strict=True)
         self.sort_map = {'Score': 'score', 'Published': 'published', 'Citations': 'is-referenced-by-count'}
         self.limit_map = {'10': 10, '20': 20, '50': 50, '100': 100}
 
@@ -30,7 +32,7 @@ class SearchAPI(Resource):
         total = w.count()
         results = []
         for work in w:
-            results.append(work)
+            results.append(self.work_schema.load(work).data.get_simple())
             if len(results) >= limit:
                 break
         return {'items': results, 'total': total, 'url': url}

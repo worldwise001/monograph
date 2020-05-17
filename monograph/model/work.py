@@ -1,12 +1,12 @@
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 import attr
 
 from monograph.model.schema import CrossRefAttrsSchema
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, kw_only=True)
 class ISBNType:
     value: str
     type: str
@@ -18,7 +18,7 @@ class ISBNTypeSchema(CrossRefAttrsSchema):
         register_as_scheme = True
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, kw_only=True)
 class ContentDomain:
     domain: List[str]
     crossmark_restriction: bool
@@ -30,7 +30,7 @@ class ContentDomainSchema(CrossRefAttrsSchema):
         register_as_scheme = True
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, kw_only=True)
 class DateParts:
     date_parts: List[List[int]]
 
@@ -41,12 +41,23 @@ class DatePartsSchema(CrossRefAttrsSchema):
         register_as_scheme = True
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, kw_only=True)
+class Affiliation:
+    name: str
+
+
+class AffiliationSchema(CrossRefAttrsSchema):
+    class Meta:
+        target = Affiliation
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Author:
     given: str
     family: str
     sequence: str
-    affiliation: List[str]
+    affiliation: List[Affiliation] = []
 
 
 class AuthorSchema(CrossRefAttrsSchema):
@@ -55,12 +66,12 @@ class AuthorSchema(CrossRefAttrsSchema):
         register_as_scheme = True
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, kw_only=True)
 class Event:
     name: str
     location: str
-    start: DateParts
-    end: DateParts
+    start: Optional[DateParts] = None
+    end: Optional[DateParts] = None
 
 
 class EventSchema(CrossRefAttrsSchema):
@@ -69,7 +80,7 @@ class EventSchema(CrossRefAttrsSchema):
         register_as_scheme = True
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, kw_only=True)
 class Link:
     url: str
     content_type: str
@@ -83,35 +94,76 @@ class LinkSchema(CrossRefAttrsSchema):
         register_as_scheme = True
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, kw_only=True)
+class Reference:
+    key: Optional[str] = None
+    unstructured: Optional[str] = None
+    author: Optional[str] = None
+    volume: Optional[str] = None
+    volume_title: Optional[str] = None
+    year: Optional[str] = None
+    doi: Optional[str] = None
+    doi_asserted_by: Optional[str] = None
+    first_name: Optional[str] = None
+    journal_title: Optional[str] = None
+    article_title: Optional[str] = None
+
+
+class ReferenceSchema(CrossRefAttrsSchema):
+    class Meta:
+        target = Reference
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Work:
     indexed: datetime
     reference_count: int
     publisher: str
-    isbn_type: List[ISBNType]
     content_domain: ContentDomain
-    published_print: DateParts
-    doi: str
     type: str
     created: datetime
     source: str
     is_referenced_by_count: int
     title: List[str]
     prefix: str
-    author: List[Author]
     member: str
-    event: Event
     container_title: List[str]
-    link: List[Link]
     deposited: datetime
     score: float
     issued: DateParts
-    isbn: List[str]
     references_count: int
     url: str
+    isbn: List[str] = []
+    isbn_type: List[ISBNType] = []
+    link: List[Link] = []
+    event: Optional[Event] = None
+    author: List[Author] = []
+    alternative_id: List[str] = []
+    publisher_location: Optional[str] = None
+    published_online: Optional[DateParts] = None
+    published_print: Optional[DateParts] = None
+    reference: List[Reference] = []
+    doi: Optional[str] = None
 
     def get_simple(self) -> Dict[str, Any]:
-        return {}
+        link: Optional[str] = None
+        for entry in self.link:
+            if not link or ('xplorestaging' not in entry.url and 'xplorestaging' in link):
+                link = entry.url
+        if link:
+            link = link.replace('xplorestaging', 'ieeexplore')
+
+        return {
+            'title': self.title[0] or 'Unknown',
+            'doi': self.doi or None,
+            'cited_by': self.is_referenced_by_count,
+            'year': self.issued.date_parts[0][0],
+            'from': self.container_title[0] or None,
+            'authors': AuthorSchema(many=True).dump(self.author).data,
+            'pdf': link,
+            'score': self.score
+        }
 
 
 class WorkSchema(CrossRefAttrsSchema):
