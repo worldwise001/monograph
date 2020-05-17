@@ -49,3 +49,7 @@ body {
 .container-content {
   padding-top: 50px;
 }
+
+.search-result {
+  margin-bottom: 10px;
+}
