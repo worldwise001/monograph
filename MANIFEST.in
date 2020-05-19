@@ -1,2 +1,4 @@
 include requirements.txt
 include monograph/swagger/*.yml
+include monograph/public
+include monograph/build
