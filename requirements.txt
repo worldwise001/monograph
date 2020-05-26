@@ -18,6 +18,7 @@ marshmallow==2.21.0
 marshmallow-annotations==2.4.0
 mccabe==0.6.1
 mistune==0.8.4
+peewee==3.13.3
 pyrsistent==0.16.0
 pytz==2020.1
 PyYAML==5.3.1
