@@ -1,28 +1,63 @@
-from peewee import Model, CharField, DateTimeField, MySQLDatabase
+from peewee import Model, CharField, DateTimeField, MySQLDatabase, DatabaseProxy
+from datetime import datetime
 
 # NOTE: It may be more conventional to name this file ORM.py
 
-db = None # *existing* db file to connect to [e.g., MySqlDatabase('db.sql')]
-# can be remote
+db = DatabaseProxy() # Set to DatabaseProxy() to enable setting db at runtime
+# There are other ways to do this
+# http://docs.peewee-orm.com/en/latest/peewee/database.html#setting-the-database-at-run-time
 
-# Database model
+# Base Database model, actual models should inherit this
 class BaseModel(Model):
     class Meta:
         database = db
 
 class User(BaseModel):
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        now = datetime.now()
+        self.join_date = now
+        self.last_changed = now
+
     # Should we have an numerical ID field or just use username as key?
     username = CharField(unique=True)
     password = CharField
     email = CharField
     join_date = DateTimeField
-    update_date = DateTimeField # Last time user was updated
+    last_changed = DateTimeField # Last time user was updated
 
     # Other field ideas:
     # - Google scholar ID
     # - Home institution URL
+
+    def update_last_changed(self):
+        self.last_changed = datetime.today()
+
+    # NOT WORKING! DOES NOT DO ANYTHING
+    def change_password(self, new_password) -> bool:
+        if is_good_password(new_password):
+            # TODO: hash the passwords
+            return True
+        else:
+            return False
+
+    def change_email(self, new_email) -> bool:
+        if is_good_email(new_email):
+            self.email = new_email
+            self.update_last_changed()
+            return True
+        else:
+            return False
+    # Should we be using getters as well?
     
     # TODO: Convenience methods go here (e.g., get relationships to other tables)
 
+def is_good_email(email: str) -> bool:
+    # TODO: complete
+    return True
+
+def is_good_password(password: str) -> bool:
+    # TODO: complete
+    return True
 
 # TODO other tables
