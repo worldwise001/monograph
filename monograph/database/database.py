@@ -16,7 +16,7 @@ class User(BaseModel):
     password = CharField
     email = CharField
     join_date = DateTimeField
-    update_data = DateTimeField # Last time user was updated
+    update_date = DateTimeField # Last time user was updated
 
     # Other field ideas:
     # - Google scholar ID
