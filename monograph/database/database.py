@@ -1,12 +1,14 @@
-from peewee import *
+from peewee import Model, CharField, DateTimeField, MySQLDatabase
 
-database = None
+# NOTE: It may be more conventional to name this file ORM.py
 
+db = None # *existing* db file to connect to [e.g., MySqlDatabase('db.sql')]
+# can be remote
 
 # Database model
 class BaseModel(Model):
     class Meta:
-        database = database
+        database = db
 
 class User(BaseModel):
     # Should we have an numerical ID field or just use username as key?
