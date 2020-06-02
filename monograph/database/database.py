@@ -1,6 +1,5 @@
 from peewee import Model, CharField, DateTimeField, DatabaseProxy
 from datetime import datetime
-from typing import Any
 
 # NOTE: It may be more conventional to name this file ORM.py
 
