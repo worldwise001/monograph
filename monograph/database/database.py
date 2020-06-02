@@ -1,5 +1,6 @@
 from peewee import Model, CharField, DateTimeField, DatabaseProxy
 from datetime import datetime
+from typing import Any
 
 # NOTE: It may be more conventional to name this file ORM.py
 
@@ -15,7 +16,7 @@ class BaseModel(Model):
 
 
 class User(BaseModel):
-    def __init__(self, *args: list, **kwargs: dict):  # PLEASE CHECK
+    def __init__(self, *args: str, **kwargs: str):  # PLEASE CHECK
         super(User, self).__init__(*args, **kwargs)
         now = datetime.now()
         self.join_date = now
