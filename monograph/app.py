@@ -3,6 +3,7 @@ import os
 
 from flasgger import Swagger
 from flask import Flask
+import flask_login
 from flask_cors import CORS
 
 from monograph.api import ApiBlueprint
@@ -17,6 +18,31 @@ def create_app() -> Flask:
 
     app = Flask(__name__)
     app.register_blueprint(ApiBlueprint())
+
+    login_manager = flask_login.LoginManager()
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def user_loader(username):
+        if username != "admin":
+            return
+
+        user = User()
+        user.id = user
+        return user
+
+    @login_manager.request_loader
+    def request_loader(request):
+        username = request.form.get('username')
+        if username != "admin":
+            return
+
+        user = User()
+        user.id = username
+
+        user.is_authenticated = request.form['password'] == 'admin'
+
+        return user
 
     CORS(app)
     Swagger(app, template_file=os.path.join(ROOT_DIR, 'swagger', 'template.yml'), parse=True,
@@ -37,3 +63,8 @@ def create_app() -> Flask:
     LOGGER.info(app.url_map)
 
     return app
+
+
+class User(flask_login.UserMixin):
+    pass
+
