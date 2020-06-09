@@ -10,6 +10,7 @@ import Preferences from "./Preferences";
 import Annotate from "./Annotate";
 import Footer from "./Footer";
 import About from "./About";
+import Login from "./Login"
 
 class App extends Component {
     render() {

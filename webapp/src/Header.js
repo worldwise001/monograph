@@ -6,7 +6,7 @@ import {NavLink} from "react-router-dom";
 import NavbarBrand from "react-bootstrap/NavbarBrand";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faBook, faHighlighter, faSearch, faTools
+    faBook, faHighlighter, faSearch, faTools, faUser
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -30,6 +30,9 @@ class Header extends Component {
                         </Nav.Item>
                         <Nav.Item>
                             <NavLink to='/preferences' className='nav-link' activeClassName='active'><FontAwesomeIcon icon={faTools} title={'preferences'} /></NavLink>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <NavLink to='/login' className='nav-link' activeClassName='active'><FontAwesomeIcon icon={faUser} title={'login'} /></NavLink>
                         </Nav.Item>
                     </Nav>
                 </Container>
