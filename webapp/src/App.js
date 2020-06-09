@@ -24,6 +24,7 @@ class App extends Component {
                             <Route path='/annotate' component={Annotate}/>
                             <Route path='/preferences' component={Preferences}/>
                             <Route path='/about' component={About}/>
+                            <Route path='/login' component={Login}/>
                         </Switch>
                     <Footer />
                 </div>
