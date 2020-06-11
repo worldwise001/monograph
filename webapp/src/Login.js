@@ -28,7 +28,6 @@ class Login extends Component {
     }
     handleSubmit(event) {
         let state = this.state;
-        state.isLoaded = false;
         fetch("/login", {
             method: 'POST',
 
@@ -46,7 +45,7 @@ class Login extends Component {
     }
     render() {
         return (
-            <Container classname={"container-content"}>
+            <Container className={"container-content"}>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group controlId="formUsername">
                         <Form.Label>User Name</Form.Label>
