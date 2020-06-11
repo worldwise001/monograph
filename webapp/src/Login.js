@@ -27,8 +27,22 @@ class Login extends Component {
         this.setState({ password: event.target.value})
     }
     handleSubmit(event) {
-        const queryString = '?' + new URLSearchParams(this.state.query).toString();
-        fetch("/login" + queryString) // Probably not good
+        let state = this.state;
+        state.isLoaded = false;
+        fetch("/login", {
+            method: 'POST',
+
+            body: JSON.stringify({
+                username: this.state.query['username'],
+                password: this.state.query['password']
+            })
+        })
+        .then(res => res.json())
+        .then(
+            (result) => {
+                alert(result)
+            }
+        )
     }
     render() {
         return (
