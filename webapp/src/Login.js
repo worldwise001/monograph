@@ -6,42 +6,41 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username:'',
-            password:''
-        }
-        this.handleChange = this.handleChange.bind(this);
+            username: "default",
+            password: "default"
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleUserChange = this.handleUserChange.bind(this);
-        this.handlePassChange = this.handlePassChange.bind(this);
     }
-    handleChange(event) {
+    handleInputChange(event) {
         const target = event.target;
         const name = target.name;
-        let state = this.state;
-        state.query[name] = target.value
-    }
-    handleUserChange(event) {
-        this.setState({ username: event.target.value})
-    }
-    handlePassChange(event) {
-        this.setState({ password: event.target.value})
+        this.setState({ [name]: target.value })
     }
     handleSubmit(event) {
+        event.preventDefault();
         let state = this.state;
-        fetch("/login", {
+        state.isLoaded = false;
+
+        fetch("/api/login", {
             method: 'POST',
 
             body: JSON.stringify({
-                username: this.state.query['username'],
-                password: this.state.query['password']
+                username: state.username,
+                password: state.password
             })
         })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                alert(result)
+        .then(resp => {
+            if (resp.ok) {
+                return resp.json();
+            } else {
+                alert(":DD")
+                throw new Error("test")
             }
-        )
+        })
+        .then(res => res.json())
+        .then(result => alert(result.success))
+        .catch(error => alert(error.error))
     }
     render() {
         return (
@@ -50,13 +49,13 @@ class Login extends Component {
                     <Form.Group controlId="formUsername">
                         <Form.Label>User Name</Form.Label>
                         <Form.Control type="username" placeholder="User Name" 
-                                      name="username" onChange={this.handleUserChange}></Form.Control>
+                                      name="username" onChange={this.handleInputChange}></Form.Control>
                     </Form.Group>
 
                     <Form.Group controlId="formPassword">
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="" name="password" 
-                                      onChange={this.handlePassChange}></Form.Control>
+                                      onChange={this.handleInputChange}></Form.Control>
                     </Form.Group>  
                     <Button variant="primary" type="submit">
                         Submit

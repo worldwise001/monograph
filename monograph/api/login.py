@@ -13,10 +13,10 @@ class LoginAPI(Resource):
         user = body.get('username')
         password = body.get('password')
 
-        authorized = (user == 'admin') and (password == 'admin')
+        authorized = ((user == 'admin') and (password == 'admin'))
 
         if not authorized:
             return {'error': 'Incorrect username or password'}, 401
 
         # Else
-        return {'sucess': f'Welcome {user}'}
+        return {'success': f'Welcome {user}'}
