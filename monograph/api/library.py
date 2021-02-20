@@ -14,7 +14,7 @@ class LibraryAPI(Resource):
 
     def get(self) -> Dict[str, Any]:
         members = []
-        member_ids = CONFIG.get('monograph').get('memberlist')
+        member_ids = CONFIG['monograph'].get('memberlist')
         for member_id in member_ids:
             members.append(self.members.member(member_id=member_id))
         parsed_members = [member.get_simple() for member in self.schema.load(members).data]

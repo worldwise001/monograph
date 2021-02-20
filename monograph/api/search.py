@@ -25,7 +25,7 @@ class SearchAPI(Resource):
         limit = self.limit_map.get(cast(str, request.args.get('limit')), 10)
 
         w = self.works
-        for member in CONFIG.get('monograph').get('memberlist'):
+        for member in CONFIG['monograph'].get('memberlist'):
             w = w.filter(member=member)
         w = w.query(query).sort(sort)
         url = unquote(w.url)
