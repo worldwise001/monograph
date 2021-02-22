@@ -10,6 +10,7 @@ setup(
     version=VERSION,
     packages=find_packages(),
     install_requires=install_requires,
+    include_package_data=True,
 
     # metadata to display on PyPI
     author="Sarah Harvey",
