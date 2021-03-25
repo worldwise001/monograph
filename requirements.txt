@@ -21,7 +21,7 @@ mistune==0.8.4
 peewee==3.13.3
 pyrsistent==0.16.0
 pytz==2020.1
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.22.0
 six==1.14.0
 typed-ast==1.4.2
