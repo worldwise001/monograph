@@ -17,7 +17,7 @@ MarkupSafe==1.1.1
 marshmallow==2.21.0
 marshmallow-annotations==2.4.0
 mccabe==0.6.1
-mistune==0.8.4
+mistune==2.0.3
 peewee==3.13.3
 pyrsistent==0.16.0
 pytz==2020.1
